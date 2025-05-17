@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -48,6 +48,9 @@ namespace StarterAssets
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
+        [Header("Movement")]
+        public bool isSwiming = false;
+
         // cinemachine
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
@@ -62,6 +65,7 @@ namespace StarterAssets
 
         // animation IDs
         private int _animIDMove;
+        private int _animIDSwim;
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -100,7 +104,7 @@ namespace StarterAssets
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -116,7 +120,11 @@ namespace StarterAssets
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
-            Move();
+
+            if (!isSwiming)
+                Move();
+            else
+                Swim();
         }
 
         private void LateUpdate()
@@ -126,7 +134,8 @@ namespace StarterAssets
 
         private void AssignAnimationIDs()
         {
-            _animIDMove = Animator.StringToHash("IsMoving");
+            _animIDMove = Animator.StringToHash("Motion");
+            _animIDSwim = Animator.StringToHash("Swim");
         }
 
         private void CameraRotation()
@@ -184,9 +193,6 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
-            if (_animationBlend < 0.01f) _animationBlend = 0f;
-
             // normalise input direction
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
@@ -203,17 +209,114 @@ namespace StarterAssets
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             }
 
-
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
             // move the player
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
+
             // update animator if using character
             if (_hasAnimator)
             {
-                _animator.SetBool(_animIDMove, (targetSpeed > 0));
+                //Tăng từ từ chuyển động
+                _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+                if (_animationBlend < 0.01f) _animationBlend = 0f;
+
+                _animator.SetFloat(_animIDMove, _animationBlend);
+            }
+        }
+
+        private void Swim()
+        {
+            // set target speed based on move speed, sprint speed and if sprint is pressed
+            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+
+            // if there is no input, set the target speed to 0
+            if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+
+            // calculate current speed in 3D
+            float currentSpeed = _controller.velocity.magnitude;
+
+            float speedOffset = 0.1f;
+            float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+
+            // accelerate or decelerate to target speed
+            if (currentSpeed < targetSpeed - speedOffset || currentSpeed > targetSpeed + speedOffset)
+            {
+                _speed = Mathf.Lerp(currentSpeed, targetSpeed * inputMagnitude, Time.deltaTime * SpeedChangeRate);
+                _speed = Mathf.Round(_speed * 1000f) / 1000f;
+            }
+            else
+            {
+                _speed = targetSpeed;
+            }
+
+            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+            if (_animationBlend < 0.01f) _animationBlend = 0f;
+
+            // calculate movement direction relative to camera
+            Vector3 moveDirection = Vector3.zero;
+            float targetPitch = 0.0f; // Default pitch when not swimming up/down
+
+            if (_input.move != Vector2.zero)
+            {
+                // get camera's forward and right vectors
+                Vector3 cameraForward = _mainCamera.transform.forward;
+                Vector3 cameraRight = _mainCamera.transform.right;
+
+                // project camera vectors to ignore pitch for horizontal movement
+                cameraForward.y = 0f;
+                cameraRight.y = 0f;
+                cameraForward.Normalize();
+                cameraRight.Normalize();
+
+                // calculate horizontal movement direction based on input relative to camera
+                moveDirection = (cameraRight * _input.move.x + cameraForward * _input.move.y).normalized;
+            }
+
+            // handle vertical movement with jump and crouch
+            float verticalSpeed = 2.0f; // Speed for swimming up/down
+            if (_input.jump)
+            {
+                moveDirection.y = 1.0f; // Swim up
+                targetPitch = -20.0f; // Tilt up slightly
+            }
+            else if (_input.crouch)
+            {
+                moveDirection.y = -1.0f; // Swim down
+                targetPitch = 20.0f; // Tilt down slightly
+            }
+
+            // rotate player to follow camera yaw and smooth pitch
+            if (_input.move != Vector2.zero || _input.jump || _input.crouch)
+            {
+                float targetYaw = _cinemachineTargetYaw;
+
+                // smooth pitch rotation
+                float currentPitch = transform.eulerAngles.x;
+                if (currentPitch > 180f) currentPitch -= 360f; // normalize to [-180, 180]
+                float smoothPitch = Mathf.SmoothDampAngle(currentPitch, targetPitch, ref _rotationVelocity, RotationSmoothTime);
+
+                // apply rotation with clamped pitch
+                transform.rotation = Quaternion.Euler(ClampAngle(smoothPitch, -30.0f, 30.0f), targetYaw, 0.0f);
+            }
+            else
+            {
+                // return to neutral rotation when not moving
+                float currentPitch = transform.eulerAngles.x;
+                if (currentPitch > 180f) currentPitch -= 360f;
+                float smoothPitch = Mathf.SmoothDampAngle(currentPitch, 0.0f, ref _rotationVelocity, RotationSmoothTime);
+                transform.rotation = Quaternion.Euler(ClampAngle(smoothPitch, -30.0f, 30.0f), transform.eulerAngles.y, 0.0f);
+            }
+
+            // move the player
+            _controller.Move(moveDirection.normalized * (_speed * Time.deltaTime));
+
+            // update animator if using character
+            if (_hasAnimator)
+            {
+                _animator.SetFloat(_animIDMove, _animationBlend);
             }
         }
 
