@@ -51,6 +51,8 @@ namespace StarterAssets
         [Header("Movement")]
         public bool isSwiming = false;
 
+
+
         // cinemachine
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
@@ -60,6 +62,8 @@ namespace StarterAssets
         private float _animationBlend;
         private float _targetRotation = 0.0f;
         private float _rotationVelocity;
+        private float _yawVelocity;
+        private float _pitchVelocity;
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
 
@@ -252,12 +256,11 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, 0.2f * Time.deltaTime * SpeedChangeRate);
+            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             // calculate movement direction relative to camera
             Vector3 moveDirection = Vector3.zero;
-            float targetPitch = 0.0f; // Default pitch when not swimming up/down
 
             if (_input.move != Vector2.zero)
             {
@@ -280,39 +283,40 @@ namespace StarterAssets
             if (_input.jump)
             {
                 moveDirection.y = 1.0f; // Swim up
-                targetPitch = -20.0f; // Tilt up slightly
             }
             else if (_input.crouch)
             {
                 moveDirection.y = -1.0f; // Swim down
-                targetPitch = 20.0f; // Tilt down slightly
             }
 
-            // rotate player to follow camera yaw and smooth pitch
-            if (_input.move != Vector2.zero || _input.jump || _input.crouch)
+            // Handle pitch rotation (up/down) for jump/crouch
+            float currentPitch = transform.eulerAngles.x;
+            if (currentPitch > 180f) currentPitch -= 360f; // Normalize to [-180, 180]
+            float targetPitch = 0.0f;
+            if (_input.jump)
             {
-                float targetYaw = _cinemachineTargetYaw;
-
-                // smooth pitch rotation
-                float currentPitch = transform.eulerAngles.x;
-                if (currentPitch > 180f) currentPitch -= 360f; // normalize to [-180, 180]
-                float smoothPitch = Mathf.SmoothDampAngle(currentPitch, targetPitch, ref _rotationVelocity, RotationSmoothTime);
-
-                // apply rotation with clamped pitch
-                transform.rotation = Quaternion.Lerp(transform.rotation,
-                                                     Quaternion.Euler(ClampAngle(smoothPitch, -30.0f, 30.0f), targetYaw, 0.0f),
-                                                     Time.deltaTime);
+                targetPitch = -20.0f; // Tilt up
             }
-            else
+            else if (_input.crouch)
             {
-                // return to neutral rotation when not moving
-                float currentPitch = transform.eulerAngles.x;
-                if (currentPitch > 180f) currentPitch -= 360f;
-                float smoothPitch = Mathf.SmoothDampAngle(currentPitch, 0.0f, ref _rotationVelocity, RotationSmoothTime);
-                transform.rotation = Quaternion.Lerp(transform.rotation,
-                                                     Quaternion.Euler(ClampAngle(smoothPitch, -30.0f, 30.0f), transform.eulerAngles.y, 0.0f),
-                                                     Time.deltaTime);
+                targetPitch = 20.0f; // Tilt down
             }
+            float smoothPitch = Mathf.SmoothDampAngle(currentPitch, targetPitch, ref _pitchVelocity, RotationSmoothTime);
+
+            // Handle yaw rotation (left/right) based on camera yaw
+            float currentYaw = transform.eulerAngles.y;
+            float smoothYaw = currentYaw;
+            if (_input.move != Vector2.zero)
+            {
+                smoothYaw = Mathf.SmoothDampAngle(currentYaw, _cinemachineTargetYaw, ref _yawVelocity, RotationSmoothTime);
+            }
+
+            // Apply combined rotation (yaw and pitch)
+            transform.rotation = Quaternion.Euler(
+                ClampAngle(smoothPitch, -30.0f, 30.0f),
+                smoothYaw,
+                0.0f
+            );
 
             // move the player
             _controller.Move(moveDirection.normalized * (_speed * Time.deltaTime));
