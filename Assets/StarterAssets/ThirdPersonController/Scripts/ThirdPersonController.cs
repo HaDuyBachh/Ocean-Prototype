@@ -252,7 +252,7 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, 0.2f * Time.deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             // calculate movement direction relative to camera
@@ -299,7 +299,9 @@ namespace StarterAssets
                 float smoothPitch = Mathf.SmoothDampAngle(currentPitch, targetPitch, ref _rotationVelocity, RotationSmoothTime);
 
                 // apply rotation with clamped pitch
-                transform.rotation = Quaternion.Euler(ClampAngle(smoothPitch, -30.0f, 30.0f), targetYaw, 0.0f);
+                transform.rotation = Quaternion.Lerp(transform.rotation,
+                                                     Quaternion.Euler(ClampAngle(smoothPitch, -30.0f, 30.0f), targetYaw, 0.0f),
+                                                     Time.deltaTime);
             }
             else
             {
@@ -307,7 +309,9 @@ namespace StarterAssets
                 float currentPitch = transform.eulerAngles.x;
                 if (currentPitch > 180f) currentPitch -= 360f;
                 float smoothPitch = Mathf.SmoothDampAngle(currentPitch, 0.0f, ref _rotationVelocity, RotationSmoothTime);
-                transform.rotation = Quaternion.Euler(ClampAngle(smoothPitch, -30.0f, 30.0f), transform.eulerAngles.y, 0.0f);
+                transform.rotation = Quaternion.Lerp(transform.rotation,
+                                                     Quaternion.Euler(ClampAngle(smoothPitch, -30.0f, 30.0f), transform.eulerAngles.y, 0.0f),
+                                                     Time.deltaTime);
             }
 
             // move the player
