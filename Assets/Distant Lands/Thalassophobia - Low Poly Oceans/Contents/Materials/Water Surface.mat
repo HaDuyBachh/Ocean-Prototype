@@ -173,8 +173,8 @@ Material:
     - _ZWrite: 0
     - __dirty: 0
     m_Colors:
-    - _BaseColor: {r: 0.504717, g: 0.7040587, b: 1, a: 0.29411766}
-    - _Color: {r: 0.504717, g: 0.7040587, b: 1, a: 0.29411766}
+    - _BaseColor: {r: 0.27317193, g: 0.5626104, b: 0.98490566, a: 0.7254902}
+    - _Color: {r: 0.2731719, g: 0.5626103, b: 0.98490566, a: 0.7254902}
     - _DepthColor: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 0}
