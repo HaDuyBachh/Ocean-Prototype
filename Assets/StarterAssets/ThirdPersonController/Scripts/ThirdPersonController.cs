@@ -156,7 +156,8 @@ namespace StarterAssets
             {
                 GroundedCheck();
                 HandleGravity();
-                Move();   
+                Move();
+                AlignToSlope();
             }
                 
             else
@@ -264,7 +265,7 @@ namespace StarterAssets
                     RotationSmoothTime);
 
                 // rotate to face input direction relative to camera position
-                transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, rotation, transform.rotation.eulerAngles.z);
             }
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
@@ -272,7 +273,6 @@ namespace StarterAssets
             // move the player
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
                              new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
-
 
             // update animator if using character
             if (_hasAnimator)
@@ -387,6 +387,34 @@ namespace StarterAssets
             if (lfAngle < -360f) lfAngle += 360f;
             if (lfAngle > 360f) lfAngle -= 360f;
             return Mathf.Clamp(lfAngle, lfMin, lfMax);
+        }
+
+        private void AlignToSlope()
+        {
+            // Vị trí kiểm tra ngay dưới chân nhân vật
+            Vector3 origin = transform.position + Vector3.up * 0.1f;
+            RaycastHit hit;
+
+            // Raycast xuống dưới để lấy normal của mặt đất
+            if (Physics.Raycast(origin, Vector3.down, out hit, SlopeCheckDistance + 0.2f, GroundLayers))
+            {
+                // Lấy hướng di chuyển hiện tại
+                Vector3 moveDirection = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z);
+                if (moveDirection.sqrMagnitude > 0.01f)
+                {
+                    // Tính toán hướng forward mới dựa trên hướng di chuyển và normal mặt đất
+                    Vector3 slopeForward = Vector3.Cross(transform.right, hit.normal).normalized;
+                    Quaternion targetRotation = Quaternion.LookRotation(slopeForward, hit.normal);
+
+                    // Chỉ xoay theo pitch (nghiêng lên xuống), giữ nguyên yaw (quay ngang)
+                    Vector3 euler = targetRotation.eulerAngles;
+                    euler.y = transform.eulerAngles.y;
+                    targetRotation = Quaternion.Euler(euler);
+
+                    // Xoay mượt mà
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+                }
+            }
         }
 
         private void GroundedCheck()
