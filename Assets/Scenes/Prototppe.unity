@@ -3728,7 +3728,9 @@ MonoBehaviour:
   BottomClamp: -60
   CameraAngleOverride: 0
   LockCameraPosition: 0
-  isSwiming: 1
+  isSwiming: 0
+  GroundCheckRadius: 0.2
+  GroundCheckOffset: {x: 0, y: -0.1, z: 0}
 --- !u!143 &4416926083347132233
 CharacterController:
   m_ObjectHideFlags: 0

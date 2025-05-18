@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -51,7 +52,12 @@ namespace StarterAssets
         [Header("Movement")]
         public bool isSwiming = false;
 
+        [Header("Ground Check")]
+        [Tooltip("Radius of the sphere for ground check")]
+        public float GroundCheckRadius = 0.2f; // Bán kính hình cầu
 
+        [Tooltip("Position offset for ground check sphere (relative to character bottom)")]
+        public Vector3 GroundCheckOffset = new Vector3(0, 0.1f, 0);
 
         // cinemachine
         private float _cinemachineTargetYaw;
@@ -126,9 +132,31 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
 
             if (!isSwiming)
-                Move();
+            {
+                if (!IsGround())
+                    Gravity();
+                else
+                    Move();
+            }
+                
             else
                 Swim();
+        }
+
+        private void Gravity()
+        {
+            Debug.Log("Đang áp dụng trọng lực");
+            // Áp dụng trọng lực
+            _verticalVelocity += -9.8f * Time.deltaTime;
+
+            // Di chuyển nhân vật xuống theo trọng lực
+            _controller.Move(new Vector3(0.0f, _verticalVelocity * Time.deltaTime, 0.0f));
+
+            // Nếu chạm đất, đặt lại vận tốc để ổn định
+            if (IsGround() && _verticalVelocity < 0)
+            {
+                _verticalVelocity = -2f;
+            }
         }
 
         private void LateUpdate()
@@ -161,6 +189,20 @@ namespace StarterAssets
             // Cinemachine will follow this target
             CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
                 _cinemachineTargetYaw, 0.0f);
+        }
+
+        private bool IsGround()
+        {
+            // Lấy vị trí trung tâm của hình cầu (dưới chân nhân vật + offset)
+            Vector3 spherePosition = transform.position + GroundCheckOffset;
+
+            // Kiểm tra va chạm với Layer "Default"
+            return Physics.CheckSphere(
+                spherePosition,
+                GroundCheckRadius,
+                LayerMask.GetMask("Default"), // Chỉ kiểm tra với Layer "Default"
+                QueryTriggerInteraction.Ignore // Bỏ qua Trigger Collider
+            );
         }
 
         private void Move()
@@ -217,7 +259,7 @@ namespace StarterAssets
 
             // move the player
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+                             new Vector3(0.0f, 0.0f, 0.0f) * Time.deltaTime);
 
 
             // update animator if using character
@@ -333,6 +375,14 @@ namespace StarterAssets
             if (lfAngle < -360f) lfAngle += 360f;
             if (lfAngle > 360f) lfAngle -= 360f;
             return Mathf.Clamp(lfAngle, lfMin, lfMax);
+        }
+
+
+        private void OnDrawGizmosSelected()
+        {
+            Vector3 spherePosition = transform.position + GroundCheckOffset;
+            Gizmos.color = Color.green; // Màu để dễ phân biệt
+            Gizmos.DrawWireSphere(spherePosition, GroundCheckRadius);
         }
     }
 }
