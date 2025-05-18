@@ -1448,7 +1448,7 @@ PrefabInstance:
     - target: {fileID: 8944336655422409503, guid: f6d148d888ffbf54b9afe9936dfaec1f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.633
+      value: 2.2779999
       objectReference: {fileID: 0}
     - target: {fileID: 8944336655422409503, guid: f6d148d888ffbf54b9afe9936dfaec1f,
         type: 3}
@@ -1509,7 +1509,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1237289645}
   - component: {fileID: 1237289647}
-  - component: {fileID: 1237289648}
   m_Layer: 3
   m_Name: GreenTurtle
   m_TagString: Untagged
@@ -1599,27 +1598,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.32985467, y: 0.019452944, z: -0.000000029802322}
     m_Extent: {x: 0.59973526, y: 0.18150213, z: 0.7750224}
   m_DirtyAABB: 0
---- !u!65 &1237289648
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1237289644}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 0.25, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1327619676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1711,7 +1689,7 @@ PrefabInstance:
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.633
+      value: 2.2779999
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8,
         type: 3}
@@ -3521,7 +3499,7 @@ Transform:
   m_GameObject: {fileID: 4416926083347132227}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.084, z: 0}
+  m_LocalPosition: {x: 0, y: 1.729, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3682,7 +3660,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3893294199639930361}
   - component: {fileID: 6982812147933622147}
-  - component: {fileID: 6982812147933622148}
   - component: {fileID: 4416926083347132233}
   - component: {fileID: 4416926083347132232}
   - component: {fileID: 135756641613574975}
@@ -3729,8 +3706,13 @@ MonoBehaviour:
   CameraAngleOverride: 0
   LockCameraPosition: 0
   isSwiming: 0
-  GroundCheckRadius: 0.2
-  GroundCheckOffset: {x: 0, y: -0.1, z: 0}
+  Grounded: 1
+  GroundedOffset: 0
+  GroundedRadius: 0.1
+  GroundLayers:
+    serializedVersion: 2
+    m_Bits: 1
+  _isGround: 0
 --- !u!143 &4416926083347132233
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3754,9 +3736,9 @@ CharacterController:
   m_Radius: 0.2
   m_SlopeLimit: 20
   m_StepOffset: 0
-  m_SkinWidth: 0.0001
+  m_SkinWidth: 0.01
   m_MinMoveDistance: 0
-  m_Center: {x: 0, y: 0.1, z: 0}
+  m_Center: {x: 0, y: 0.15, z: 0}
 --- !u!114 &4416926083347132239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4647,33 +4629,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!54 &6982812147933622148
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4416926083347132227}
-  serializedVersion: 4
-  m_Mass: 5
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
 --- !u!65 &6983766877115995853
 BoxCollider:
   m_ObjectHideFlags: 0
