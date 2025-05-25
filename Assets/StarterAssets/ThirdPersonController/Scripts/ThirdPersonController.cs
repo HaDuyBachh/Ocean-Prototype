@@ -82,6 +82,7 @@ namespace StarterAssets
 
         [Header("Swim")]
         public Transform _swimLimitObject;
+        public float _offsetLimit = -0.5f;
 
         // cinemachine
         private float _cinemachineTargetYaw;
@@ -164,7 +165,11 @@ namespace StarterAssets
             }
 
             else
+            {
+                GroundedCheck();
                 Swim();
+            }
+                
         }
 
         public void ChangeToWaterEnvairoment()
@@ -348,7 +353,7 @@ namespace StarterAssets
             }
 
             // handle vertical movement with jump and crouch
-            if (_input.jump && transform.position.y + 0.3f < _swimLimitObject.position.y)
+            if (_input.jump && transform.position.y + _offsetLimit < _swimLimitObject.position.y)
             {
                 moveDirection.y = 1.0f; // Swim up
             }
@@ -357,10 +362,15 @@ namespace StarterAssets
                 moveDirection.y = -1.0f; // Swim down
             }
 
-            //Nhân vật phải chìm xuống khi vượt quá limit
-            if (transform.position.y - 0.001 > _swimLimitObject.position.y)
+            
+            //Nhân vật khi chạm đất lên bwờ thì không cần hạ xuống.
+            if (!Grounded && !_isGround)
             {
-                moveDirection.y = -1.0f;
+                //Nhân vật phải chìm xuống khi vượt quá _offsetLimit
+                if (transform.position.y + _offsetLimit / 2 > _swimLimitObject.position.y)
+                {
+                    moveDirection.y = -1.0f;
+                }
             }
 
             // Handle pitch rotation (up/down) for jump/crouch

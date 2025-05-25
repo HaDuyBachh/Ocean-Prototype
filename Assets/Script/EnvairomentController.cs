@@ -10,11 +10,11 @@ public class EnvairomentController : MonoBehaviour
 
     public void InnerWater()
     {
-        WaterFog.SetActive(true);
+        //WaterFog.SetActive(true);
     }
 
     public void OutterWater()
     {
-        WaterFog.SetActive(false);
+        //WaterFog.SetActive(false);
     }
 }

@@ -16,11 +16,6 @@ public class InnerWaterControl : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("MainCamera"))
-        {
-            envairoment.InnerWater();
-        }
-        else
         if (other.CompareTag("Player"))
         {
             character.ChangeToWaterEnvairoment();
@@ -29,11 +24,6 @@ public class InnerWaterControl : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("MainCamera"))
-        {
-            envairoment.OutterWater();
-        }
-        else
         if (other.CompareTag("Player"))
         {
             character.ChangeToGroundEnvairoment();
