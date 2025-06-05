@@ -5,8 +5,12 @@ using System.Collections.Generic;
 public class CrabController : MonoBehaviour
 {
     [Header("Way Point")]
+
+    public bool isAutoGetListWayPoint = true;
+    public Transform listWayPoint;
+    
     // Danh sách các waypoint để cua di chuyển
-    public List<Transform> waypoints;
+    [SerializeField] private List<Transform> waypoints;
 
     [Header("Navmesh Agent")]
     // NavMeshAgent để điều khiển di chuyển
@@ -71,12 +75,23 @@ public class CrabController : MonoBehaviour
         // Tắt auto rotation để tự quản lý xoay
         agent.updateRotation = false;
 
-        // Nếu có waypoint, đặt đích đến là waypoint đầu tiên
-        if (waypoints.Count > 0)
-        {
-            agent.SetDestination(waypoints[currentWaypointIndex].position);
-        }
+        if (isAutoGetListWayPoint) SetupWayPoint(listWayPoint);
     }
+
+    private void SetupWayPoint(Transform listWayPoint)
+    {
+        waypoints.Clear();
+
+        Transform[] childTransforms = listWayPoint.GetComponentsInChildren<Transform>();
+
+        foreach (Transform child in childTransforms)
+        {
+            if (child != listWayPoint.transform && !waypoints.Contains(child))
+            {
+                waypoints.Add(child);
+            }
+        }
+    }    
 
     void Update()
     {
@@ -132,7 +147,7 @@ public class CrabController : MonoBehaviour
             animator.SetFloat("Speed", currentAnimSpeed);
 
             // Nếu đã đến gần waypoint, chuyển sang trạng thái chờ
-            if (agent.remainingDistance < 0.5f)
+            if (agent.remainingDistance + 0.01f <= agent.stoppingDistance)
             {
                 isWaiting = true;
                 waitTimer = Random.Range(1f, 3f);
