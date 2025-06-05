@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CrabController : MonoBehaviour
 {
-    // Danh sách các waypoint
+    // Danh sách các waypoint để cua di chuyển
     public List<Transform> waypoints;
 
     // NavMeshAgent để điều khiển di chuyển
@@ -13,26 +13,38 @@ public class CrabController : MonoBehaviour
     // Animator để quản lý animation
     private Animator animator;
 
-    // Các thông số tốc độ
+    // Tốc độ đi bộ và chạy
     private float walkSpeed = 3f;
     private float sprintSpeed = 5f;
 
-    // Layer của Player
+    // Layer của Player để phát hiện tấn công
     public LayerMask playerLayer;
 
-    // Phạm vi phát hiện player để tấn công
+    // Phạm vi phát hiện Player để tấn công
     public float attackRange = 2f;
 
     // Thời gian chờ ngẫu nhiên giữa các hành động
     private float waitTime;
     private float waitTimer;
 
-    // Trạng thái hiện tại
+    // Trạng thái hiện tại của cua
     private bool isWaiting;
     private bool isAttacking;
 
-    // Waypoint hiện tại
+    // Chỉ số của waypoint hiện tại
     private int currentWaypointIndex;
+
+    // Tốc độ xoay để căn chỉnh transform.left
+    private float rotationSpeed = 180f; // Độ/giây
+
+    // Giá trị Speed hiện tại của Animator, để chuyển đổi mượt
+    private float currentAnimSpeed;
+
+    // Thời gian để Speed chuyển đổi mượt
+    private float speedSmoothTime = 0.3f;
+
+    // Khoảng cách để bắt đầu giảm tốc độ khi đến gần waypoint
+    private float slowDownDistance = 2f;
 
     void Start()
     {
@@ -40,13 +52,17 @@ public class CrabController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
 
-        // Khởi tạo
+        // Khởi tạo các biến trạng thái
         isWaiting = false;
         isAttacking = false;
         waitTimer = 0f;
         currentWaypointIndex = 0;
+        currentAnimSpeed = 0f;
 
-        // Chọn waypoint đầu tiên
+        // Tắt auto rotation để tự quản lý xoay
+        agent.updateRotation = false;
+
+        // Nếu có waypoint, đặt đích đến là waypoint đầu tiên
         if (waypoints.Count > 0)
         {
             agent.SetDestination(waypoints[currentWaypointIndex].position);
@@ -55,55 +71,104 @@ public class CrabController : MonoBehaviour
 
     void Update()
     {
-        // Kiểm tra nếu đang tấn công
+        // Xử lý tấn công
+        if (HandleAttack()) return;
+
+        // Xử lý trạng thái chờ
+        if (HandleWaiting()) return;
+
+        // Xử lý di chuyển và tốc độ
+        HandleMovementAndSpeed();
+
+        // Cập nhật xoay để di chuyển ngang
+        UpdateSidewaysRotation();
+    }
+
+    // Xử lý hành động tấn công
+    private bool HandleAttack()
+    {
+        // Kiểm tra nếu có Player trong phạm vi tấn công
         if (CheckForPlayer())
         {
+            // Chuyển sang trạng thái tấn công
             isAttacking = true;
             agent.isStopped = true;
-            animator.SetFloat("Speed", 0f);
+
+            // Giảm Speed mượt mà về 0
+            currentAnimSpeed = Mathf.Lerp(currentAnimSpeed, 0f, Time.deltaTime / speedSmoothTime);
+            animator.SetFloat("Speed", currentAnimSpeed);
             animator.SetBool("Attack", true);
-            return;
-        }
-        else
-        {
-            isAttacking = false;
-            animator.SetBool("Attack", false);
-            agent.isStopped = false;
+            return true;
         }
 
+        // Thoát trạng thái tấn công
+        isAttacking = false;
+        animator.SetBool("Attack", false);
+        agent.isStopped = false;
+        return false;
+    }
+
+    // Xử lý trạng thái chờ
+    private bool HandleWaiting()
+    {
         // Nếu đang chờ
         if (isWaiting)
         {
+            // Giảm thời gian chờ
             waitTimer -= Time.deltaTime;
-            animator.SetFloat("Speed", 0f);
+
+            // Giảm Speed mượt mà về 0
+            currentAnimSpeed = Mathf.Lerp(currentAnimSpeed, 0f, Time.deltaTime / speedSmoothTime);
+            animator.SetFloat("Speed", currentAnimSpeed);
+
+            // Khi hết thời gian chờ, chọn hành động mới
             if (waitTimer <= 0)
             {
                 isWaiting = false;
                 ChooseNewAction();
             }
-            return;
+            return true;
         }
-
-        // Kiểm tra nếu cua đến gần waypoint
-        if (!agent.pathPending && agent.remainingDistance < 0.5f)
-        {
-            // Chọn hành động ngẫu nhiên
-            isWaiting = true;
-            waitTimer = Random.Range(1f, 3f); // Chờ 1-3 giây
-        }
-
-        // Cập nhật tốc độ cho animator
-        animator.SetFloat("Speed", agent.speed);
+        return false;
     }
 
-    // Kiểm tra nếu có player trong phạm vi tấn công
+    // Xử lý di chuyển và tốc độ
+    private void HandleMovementAndSpeed()
+    {
+        // Kiểm tra khoảng cách còn lại đến waypoint
+        if (!agent.pathPending && agent.remainingDistance < slowDownDistance)
+        {
+            // Tính tỷ lệ khoảng cách để giảm tốc độ dần
+            float distanceRatio = agent.remainingDistance / slowDownDistance;
+            float targetSpeed = agent.speed * distanceRatio;
+
+            // Giảm Speed mượt mà dựa trên khoảng cách
+            currentAnimSpeed = Mathf.Lerp(currentAnimSpeed, targetSpeed, Time.deltaTime / speedSmoothTime);
+            animator.SetFloat("Speed", currentAnimSpeed);
+
+            // Nếu đã đến gần waypoint, chuyển sang trạng thái chờ
+            if (agent.remainingDistance < 0.5f)
+            {
+                isWaiting = true;
+                waitTimer = Random.Range(1f, 3f);
+            }
+        }
+        else
+        {
+            // Cập nhật Speed mượt mà theo tốc độ di chuyển
+            currentAnimSpeed = Mathf.Lerp(currentAnimSpeed, agent.speed, Time.deltaTime / speedSmoothTime);
+            animator.SetFloat("Speed", currentAnimSpeed);
+        }
+    }
+
+    // Kiểm tra nếu có Player trong phạm vi tấn công
     private bool CheckForPlayer()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, attackRange, playerLayer);
         return hits.Length > 0;
     }
 
-    // Chọn hành động mới (đi bộ, chạy hoặc đứng im)
+    // Chọn hành động mới: đứng im, đi bộ, hoặc chạy
     private void ChooseNewAction()
     {
         // Chọn hành động ngẫu nhiên
@@ -127,6 +192,7 @@ public class CrabController : MonoBehaviour
     // Di chuyển đến waypoint tiếp theo
     private void MoveToNextWaypoint()
     {
+        // Nếu không có waypoint, thoát
         if (waypoints.Count == 0) return;
 
         // Chọn waypoint ngẫu nhiên
@@ -134,7 +200,24 @@ public class CrabController : MonoBehaviour
         agent.SetDestination(waypoints[currentWaypointIndex].position);
     }
 
-    // Vẽ phạm vi tấn công trong editor
+    // Cập nhật xoay để di chuyển theo transform.left
+    private void UpdateSidewaysRotation()
+    {
+        // Chỉ xoay khi có đường đi và không chờ/tấn công
+        if (agent.hasPath && !isWaiting && !isAttacking)
+        {
+            // Tính hướng đến waypoint
+            Vector3 direction = (agent.steeringTarget - transform.position).normalized;
+
+            // Xoay để transform.left hướng về waypoint
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up) * Quaternion.Euler(0, -90, 0);
+
+            // Xoay mượt mà
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime / 180f);
+        }
+    }
+
+    // Vẽ phạm vi tấn công trong Scene view
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
