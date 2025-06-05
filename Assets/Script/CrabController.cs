@@ -4,38 +4,44 @@ using System.Collections.Generic;
 
 public class CrabController : MonoBehaviour
 {
+    [Header("Way Point")]
     // Danh sách các waypoint để cua di chuyển
     public List<Transform> waypoints;
 
+    [Header("Navmesh Agent")]
     // NavMeshAgent để điều khiển di chuyển
     private NavMeshAgent agent;
 
+    [Header("Animator")]
     // Animator để quản lý animation
     private Animator animator;
 
+    [Header("Speed")]
     // Tốc độ đi bộ và chạy
-    private float walkSpeed = 1f;
-    private float sprintSpeed = 3f;
+    [SerializeField] private float walkSpeed = 1f;
+    [SerializeField] private float sprintSpeed = 3f;
 
+    [Header("Attack")]
     // Layer của Player để phát hiện tấn công
-    public LayerMask playerLayer;
+    [SerializeField] private LayerMask playerLayer;
 
     // Phạm vi phát hiện Player để tấn công
-    public float attackRange = 2f;
+    [SerializeField] private float attackRange = 2f;
+    [SerializeField] private bool hasDealtDamage = false;
 
     // Thời gian chờ ngẫu nhiên giữa các hành động
-    private float waitTime;
     private float waitTimer;
 
+    [Header("State")]
     // Trạng thái hiện tại của cua
-    private bool isWaiting;
-    private bool isAttacking;
+    [SerializeField] private bool isWaiting;
+    [SerializeField] private bool isAttacking;
 
     // Chỉ số của waypoint hiện tại
     private int currentWaypointIndex;
 
-    // Tốc độ xoay để căn chỉnh transform.left
-    private float rotationSpeed = 12f; // Độ/giây
+    // Tốc độ xoay để căn chỉnh
+    private float rotationSpeed = 6f;
 
     // Giá trị Speed hiện tại của Animator, để chuyển đổi mượt
     private float currentAnimSpeed;
@@ -46,6 +52,7 @@ public class CrabController : MonoBehaviour
     // Khoảng cách để bắt đầu giảm tốc độ khi đến gần waypoint
     private float slowDownDistance = 2f;
 
+    private float previousNormalizedTime;
     void Start()
     {
         // Lấy component NavMeshAgent và Animator
@@ -71,8 +78,8 @@ public class CrabController : MonoBehaviour
 
     void Update()
     {
-        // Xử lý tấn công
-        if (HandleAttack()) return;
+        //// Xử lý tấn công
+        //if (HandleAttack()) return;
 
         // Xử lý trạng thái chờ
         if (HandleWaiting()) return;
@@ -82,48 +89,6 @@ public class CrabController : MonoBehaviour
 
         // Cập nhật xoay để di chuyển ngang
         UpdateSidewaysRotation();
-    }
-
-    // Xử lý hành động tấn công
-    private bool HandleAttack()
-    {
-        // Kiểm tra nếu có Player trong phạm vi tấn công
-        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange, playerLayer);
-        if (hits.Length > 0)
-        {
-            // Chuyển sang trạng thái tấn công
-            isAttacking = true;
-            agent.isStopped = true;
-
-            Debug.Log("Đang tấn công ở đây");
-
-            // Tính hướng đến Player
-            Vector3 directionToPlayer = (hits[0].transform.position - transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer, Vector3.up);
-
-            // Xoay mượt mà về phía Player
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
-            // Giảm Speed mượt mà về 0
-            currentAnimSpeed = Mathf.Lerp(currentAnimSpeed, 0f, Time.deltaTime / speedSmoothTime);
-            animator.SetFloat("Speed", currentAnimSpeed);
-
-            // Chỉ tấn công khi đã xoay gần đúng hướng
-
-            Debug.Log("Góc tấn công là:" + Quaternion.Angle(transform.rotation, targetRotation));
-
-            if (Quaternion.Angle(transform.rotation, targetRotation) < 10f)
-            {
-                animator.SetBool("Attack", true);
-            }
-            return true;
-        }
-
-        // Thoát trạng thái tấn công
-        isAttacking = false;
-        animator.SetBool("Attack", false);
-        agent.isStopped = false;
-        return false;
     }
 
     // Xử lý trạng thái chờ
@@ -224,7 +189,7 @@ public class CrabController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up) * Quaternion.Euler(0, -90, 0);
 
             // Xoay mượt mà
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime / 180f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime /3);
         }
     }
 
@@ -233,5 +198,79 @@ public class CrabController : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
+
+    // Xử lý hành động tấn công
+    private bool HandleAttack()
+    {
+        // Kiểm tra nếu đang tấn công
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        bool isPlayingAttack = stateInfo.IsName("Attack");
+
+        // Nếu đang phát animation Attack
+        if (isAttacking && isPlayingAttack)
+        {
+            // Giảm Speed mượt mà về 0
+            currentAnimSpeed = Mathf.Lerp(currentAnimSpeed, 0f, Time.deltaTime / speedSmoothTime);
+            animator.SetFloat("Speed", currentAnimSpeed);
+
+            // Xoay về phía Player
+            Collider[] hits = Physics.OverlapSphere(transform.position, attackRange, playerLayer);
+            if (hits.Length > 0)
+            {
+                Vector3 directionToPlayer = (hits[0].transform.position - transform.position).normalized;
+                Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer, Vector3.up);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            }
+
+            // Kiểm tra thời điểm 1/2 animation để gây sát thương
+            if (stateInfo.normalizedTime >= 0.5f && !hasDealtDamage && hits.Length > 0)
+            {
+                foreach (Collider hit in hits)
+                {
+                    // Gây sát thương cho GameObject có HealthController
+                    HealthController health = hit.GetComponentInParent<HealthController>();
+                    Debug.Log("Tấn công: " + (health != null ? health.gameObject.name : "Không tìm thấy HealthController"));
+                    if (health != null)
+                    {
+                        health.HandleDamage(10); // Gây 10 sát thương
+                        break;
+                    }
+                }
+                hasDealtDamage = true; // Đánh dấu đã gây sát thương
+            }
+
+            // Reset hasDealtDamage khi animation loop lại
+            if (stateInfo.normalizedTime < previousNormalizedTime)
+            {
+                hasDealtDamage = false;
+            }
+            previousNormalizedTime = stateInfo.normalizedTime;
+
+            // Thoát trạng thái tấn công khi animation hoàn thành
+            if (stateInfo.normalizedTime >= 1.0f)
+            {
+                isAttacking = false;
+                animator.SetBool("Attack", false);
+                agent.isStopped = false;
+            }
+            return true;
+        }
+
+        // Kiểm tra nếu có Player trong phạm vi tấn công để bắt đầu tấn công
+        Collider[] initialHits = Physics.OverlapSphere(transform.position, attackRange, playerLayer);
+        if (initialHits.Length > 0)
+        {
+            // Chuyển sang trạng thái tấn công
+            isAttacking = true;
+            agent.isStopped = true;
+            animator.SetBool("Attack", true);
+            hasDealtDamage = false; // Reset để chuẩn bị gây sát thương
+            previousNormalizedTime = 0f; // Reset thời gian animation
+            return true;
+        }
+
+        // Không có Player hoặc không tấn công
+        return false;
     }
 }

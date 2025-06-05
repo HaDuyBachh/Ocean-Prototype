@@ -7,7 +7,7 @@ public class HealthController : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
 
     // Máu hiện tại
-    private int currentHealth;
+    [SerializeField] private int currentHealth;
 
     // Sự kiện được gọi khi nhân vật chết
     public UnityEvent onDeath;

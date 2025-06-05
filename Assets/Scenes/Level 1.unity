@@ -2177,6 +2177,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be2c1e08a33227646a17780019151a88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 100
+  onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &353833034
 GameObject:
   m_ObjectHideFlags: 0
@@ -5032,7 +5039,7 @@ PrefabInstance:
     - target: {fileID: 7382076998205935021, guid: 51488f1a6ee261f499079f4cbbb31c77,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.4667306
+      value: -0.4762993
       objectReference: {fileID: 0}
     - target: {fileID: 7382076998205935021, guid: 51488f1a6ee261f499079f4cbbb31c77,
         type: 3}
@@ -5042,12 +5049,12 @@ PrefabInstance:
     - target: {fileID: 7382076998205935021, guid: 51488f1a6ee261f499079f4cbbb31c77,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.99861103
+      value: 0.9991525
       objectReference: {fileID: 0}
     - target: {fileID: 7382076998205935021, guid: 51488f1a6ee261f499079f4cbbb31c77,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.04248098
+      value: 0.04115577
       objectReference: {fileID: 0}
     - target: {fileID: 7382076998205935021, guid: 51488f1a6ee261f499079f4cbbb31c77,
         type: 3}
@@ -5057,7 +5064,7 @@ PrefabInstance:
     - target: {fileID: 7382076998205935021, guid: 51488f1a6ee261f499079f4cbbb31c77,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.031166716
+      value: 0.00072024635
       objectReference: {fileID: 0}
     - target: {fileID: 7382076998205935021, guid: 51488f1a6ee261f499079f4cbbb31c77,
         type: 3}
@@ -16628,10 +16635,15 @@ MonoBehaviour:
   waypoints:
   - {fileID: 1252460499}
   - {fileID: 522524885}
+  walkSpeed: 1
+  sprintSpeed: 3
   playerLayer:
     serializedVersion: 2
     m_Bits: 8
   attackRange: 1.33
+  attackDelay: 0.8
+  hasDealtDamage: 0
+  attackTimer: 0
 --- !u!4 &953774026287487061
 Transform:
   m_ObjectHideFlags: 0
