@@ -198,10 +198,18 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4484672564758676652}
+    - targetCorrespondingSourceObject: {fileID: 3151085205062413528, guid: 29592b452790af647b944bcae9f8ee2b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5151873163486913972}
     - targetCorrespondingSourceObject: {fileID: 3223767792900900876, guid: 29592b452790af647b944bcae9f8ee2b,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7282792377487991455}
+    - targetCorrespondingSourceObject: {fileID: 3223767792900900876, guid: 29592b452790af647b944bcae9f8ee2b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1001267100990576066}
   m_SourcePrefab: {fileID: 100100000, guid: 29592b452790af647b944bcae9f8ee2b, type: 3}
 --- !u!4 &532307310055089166 stripped
 Transform:
@@ -236,6 +244,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.07704663, y: 0.1071633, z: 0.10269542}
   m_Center: {x: -0.0026367903, y: 0.0001996138, z: 0.00022844973}
+--- !u!208 &5151873163486913972
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3121975977784897341}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.039, y: 0.054, z: 0.051000003}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.003, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &3194323630131776489 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3223767792900900876, guid: 29592b452790af647b944bcae9f8ee2b,
@@ -263,3 +287,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.08128682, y: 0.10716331, z: 0.10269543}
   m_Center: {x: 0.0054314747, y: 0.00024473263, z: 0.0006067025}
+--- !u!208 &1001267100990576066
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3194323630131776489}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.041, y: 0.054, z: 0.051000003}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.0050000004, y: 0, z: 0.001}
+  m_TimeToStationary: 0.5
