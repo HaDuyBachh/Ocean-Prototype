@@ -14,8 +14,8 @@ public class CrabController : MonoBehaviour
     private Animator animator;
 
     // Tốc độ đi bộ và chạy
-    private float walkSpeed = 3f;
-    private float sprintSpeed = 5f;
+    private float walkSpeed = 1f;
+    private float sprintSpeed = 3f;
 
     // Layer của Player để phát hiện tấn công
     public LayerMask playerLayer;
@@ -35,7 +35,7 @@ public class CrabController : MonoBehaviour
     private int currentWaypointIndex;
 
     // Tốc độ xoay để căn chỉnh transform.left
-    private float rotationSpeed = 180f; // Độ/giây
+    private float rotationSpeed = 12f; // Độ/giây
 
     // Giá trị Speed hiện tại của Animator, để chuyển đổi mượt
     private float currentAnimSpeed;
@@ -88,16 +88,34 @@ public class CrabController : MonoBehaviour
     private bool HandleAttack()
     {
         // Kiểm tra nếu có Player trong phạm vi tấn công
-        if (CheckForPlayer())
+        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange, playerLayer);
+        if (hits.Length > 0)
         {
             // Chuyển sang trạng thái tấn công
             isAttacking = true;
             agent.isStopped = true;
 
+            Debug.Log("Đang tấn công ở đây");
+
+            // Tính hướng đến Player
+            Vector3 directionToPlayer = (hits[0].transform.position - transform.position).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer, Vector3.up);
+
+            // Xoay mượt mà về phía Player
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
             // Giảm Speed mượt mà về 0
             currentAnimSpeed = Mathf.Lerp(currentAnimSpeed, 0f, Time.deltaTime / speedSmoothTime);
             animator.SetFloat("Speed", currentAnimSpeed);
-            animator.SetBool("Attack", true);
+
+            // Chỉ tấn công khi đã xoay gần đúng hướng
+
+            Debug.Log("Góc tấn công là:" + Quaternion.Angle(transform.rotation, targetRotation));
+
+            if (Quaternion.Angle(transform.rotation, targetRotation) < 10f)
+            {
+                animator.SetBool("Attack", true);
+            }
             return true;
         }
 
@@ -159,13 +177,6 @@ public class CrabController : MonoBehaviour
             currentAnimSpeed = Mathf.Lerp(currentAnimSpeed, agent.speed, Time.deltaTime / speedSmoothTime);
             animator.SetFloat("Speed", currentAnimSpeed);
         }
-    }
-
-    // Kiểm tra nếu có Player trong phạm vi tấn công
-    private bool CheckForPlayer()
-    {
-        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange, playerLayer);
-        return hits.Length > 0;
     }
 
     // Chọn hành động mới: đứng im, đi bộ, hoặc chạy
