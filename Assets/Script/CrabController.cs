@@ -5,10 +5,9 @@ using System.Collections.Generic;
 public class CrabController : MonoBehaviour
 {
     [Header("Way Point")]
-
     public bool isAutoGetListWayPoint = true;
     public Transform listWayPoint;
-    
+
     // Danh sách các waypoint để cua di chuyển
     [SerializeField] private List<Transform> waypoints;
 
@@ -33,9 +32,6 @@ public class CrabController : MonoBehaviour
     [SerializeField] private float attackRange = 2f;
     [SerializeField] private bool hasDealtDamage = false;
 
-    // Thời gian chờ ngẫu nhiên giữa các hành động
-    private float waitTimer;
-
     [Header("State")]
     // Trạng thái hiện tại của cua
     [SerializeField] private bool isWaiting;
@@ -58,7 +54,19 @@ public class CrabController : MonoBehaviour
     // Khoảng cách để bắt đầu giảm tốc độ khi đến gần waypoint
     private float slowDownDistance = 2f;
 
+    [Header("Stuck Detection")]
+    // Thời gian giữa các lần kiểm tra bị kẹt
+    [SerializeField] private float checkInterval = 3f;
+    // Ngưỡng khoảng cách để coi là bị kẹt
+    [SerializeField] private float stuckDistanceThreshold = 0.5f;
+    // Vị trí ghi nhận lần trước
+    private Vector3 lastCheckPosition;
+    // Bộ đếm thời gian kiểm tra
+    private float checkTimer;
+
     private float previousNormalizedTime;
+
+    private float waitTimer = 0.0f;
     void Start()
     {
         // Lấy component NavMeshAgent và Animator
@@ -71,6 +79,10 @@ public class CrabController : MonoBehaviour
         waitTimer = 0f;
         currentWaypointIndex = 0;
         currentAnimSpeed = 0f;
+
+        // Khởi tạo biến kiểm tra kẹt
+        checkTimer = 0f;
+        lastCheckPosition = transform.position;
 
         // Tắt auto rotation để tự quản lý xoay
         agent.updateRotation = false;
@@ -91,21 +103,53 @@ public class CrabController : MonoBehaviour
                 waypoints.Add(child);
             }
         }
-    }    
+    }
 
     void Update()
     {
-        //// Xử lý tấn công
+        // Xử lý tấn công
         if (HandleAttack()) return;
 
         // Xử lý trạng thái chờ
         if (HandleWaiting()) return;
+
+        // Kiểm tra xem cua có bị kẹt không
+        CheckIfStuck();
 
         // Xử lý di chuyển và tốc độ
         HandleMovementAndSpeed();
 
         // Cập nhật xoay để di chuyển ngang
         UpdateSidewaysRotation();
+    }
+
+    // Kiểm tra xem cua có bị kẹt không
+    private void CheckIfStuck()
+    {
+        // Chỉ kiểm tra khi đang di chuyển
+        if (agent.speed > 0 && !isWaiting && !isAttacking)
+        {
+            // Tăng bộ đếm thời gian
+            checkTimer += Time.deltaTime;
+
+            // Kiểm tra sau mỗi checkInterval giây
+            if (checkTimer >= checkInterval)
+            {
+                // Tính khoảng cách di chuyển từ lần kiểm tra trước
+                float distanceMoved = Vector3.Distance(transform.position, lastCheckPosition);
+
+                // Nếu di chuyển quá ít, coi là bị kẹt
+                if (distanceMoved < stuckDistanceThreshold)
+                {
+                    // Chọn waypoint mới để thoát kẹt
+                    MoveToNextWaypoint();
+                }
+
+                // Cập nhật vị trí và reset bộ đếm
+                lastCheckPosition = transform.position;
+                checkTimer = 0f;
+            }
+        }
     }
 
     // Xử lý trạng thái chờ
@@ -204,7 +248,7 @@ public class CrabController : MonoBehaviour
             // Tính hướng đến waypoint
             Vector3 direction = (agent.steeringTarget - transform.position).normalized;
 
-            // Xoay để transform.left hướng về waypoint
+            // Xoay để transform.left hoặc transform.right hướng về waypoint
             Quaternion targetRotation = isUsingLeft ?
                 Quaternion.LookRotation(direction, Vector3.up) * Quaternion.Euler(0, -90, 0) :
                 Quaternion.LookRotation(direction, Vector3.up) * Quaternion.Euler(0, 90, 0);
@@ -212,13 +256,6 @@ public class CrabController : MonoBehaviour
             // Xoay mượt mà
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime / 3);
         }
-    }
-
-    // Vẽ phạm vi tấn công trong Scene view
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 
     // Xử lý hành động tấn công
@@ -293,5 +330,12 @@ public class CrabController : MonoBehaviour
 
         // Không có Player hoặc không tấn công
         return false;
+    }
+
+    // Vẽ phạm vi tấn công trong Scene view
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }
