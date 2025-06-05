@@ -37,8 +37,10 @@ public class CrabController : MonoBehaviour
     [SerializeField] private bool isWaiting;
     [SerializeField] private bool isAttacking;
 
+    [Header("Movement & Waypoint")]
     // Chỉ số của waypoint hiện tại
-    private int currentWaypointIndex;
+    [SerializeField] private int currentWaypointIndex;
+    [SerializeField] private bool isUsingLeft = true;
 
     // Tốc độ xoay để căn chỉnh
     private float rotationSpeed = 6f;
@@ -79,7 +81,7 @@ public class CrabController : MonoBehaviour
     void Update()
     {
         //// Xử lý tấn công
-        //if (HandleAttack()) return;
+        if (HandleAttack()) return;
 
         // Xử lý trạng thái chờ
         if (HandleWaiting()) return;
@@ -171,6 +173,8 @@ public class CrabController : MonoBehaviour
         // Nếu không có waypoint, thoát
         if (waypoints.Count == 0) return;
 
+        isUsingLeft = (Random.Range(1, 1000) % 2 == 0) ? true : false;
+
         // Chọn waypoint ngẫu nhiên
         currentWaypointIndex = Random.Range(0, waypoints.Count);
         agent.SetDestination(waypoints[currentWaypointIndex].position);
@@ -186,10 +190,12 @@ public class CrabController : MonoBehaviour
             Vector3 direction = (agent.steeringTarget - transform.position).normalized;
 
             // Xoay để transform.left hướng về waypoint
-            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up) * Quaternion.Euler(0, -90, 0);
+            Quaternion targetRotation = isUsingLeft ?
+                Quaternion.LookRotation(direction, Vector3.up) * Quaternion.Euler(0, -90, 0) :
+                Quaternion.LookRotation(direction, Vector3.up) * Quaternion.Euler(0, 90, 0);
 
             // Xoay mượt mà
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime /3);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime / 3);
         }
     }
 
