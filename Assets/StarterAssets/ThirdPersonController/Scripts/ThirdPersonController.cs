@@ -80,6 +80,10 @@ namespace StarterAssets
         [Tooltip("Distance to check for slope detection")]
         public float SlopeCheckDistance = 0.5f; // Khoảng cách kiểm tra dốc
 
+        [Header("Swim")]
+        public Transform _swimLimitObject;
+        public float _offsetLimit = -0.5f;
+
         // cinemachine
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
@@ -159,9 +163,25 @@ namespace StarterAssets
                 Move();
                 AlignToSlope();
             }
-                
+
             else
+            {
+                GroundedCheck();
                 Swim();
+            }
+                
+        }
+
+        public void ChangeToWaterEnvairoment()
+        {
+            isSwiming = true;
+            _animator.SetBool(_animIDSwim, true);
+        }
+
+        public void ChangeToGroundEnvairoment()
+        {
+            isSwiming = false;
+            _animator.SetBool(_animIDSwim, false);
         }
 
         private void HandleGravity()
@@ -171,7 +191,7 @@ namespace StarterAssets
             if (_controller.isGrounded || Grounded)
             {
                 if (_verticalVelocity < 0.0f) _verticalVelocity = -2.0f;
-                
+
             }
             else
             {
@@ -180,7 +200,7 @@ namespace StarterAssets
                     _verticalVelocity += _gravity * Time.deltaTime;
                 }
             }
-                
+
 
             //// Di chuyển nhân vật xuống theo trọng lực
             //_controller.Move(new Vector3(0.0f, _verticalVelocity * Time.deltaTime, 0.0f));
@@ -288,7 +308,7 @@ namespace StarterAssets
         private void Swim()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            float targetSpeed = 3.0f * (_input.sprint ? SprintSpeed : MoveSpeed);
 
             // if there is no input, set the target speed to 0
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
@@ -310,7 +330,7 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed / 3, Time.deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             // calculate movement direction relative to camera
@@ -333,14 +353,24 @@ namespace StarterAssets
             }
 
             // handle vertical movement with jump and crouch
-            float verticalSpeed = 2.0f; // Speed for swimming up/down
-            if (_input.jump)
+            if (_input.jump && transform.position.y + _offsetLimit < _swimLimitObject.position.y)
             {
                 moveDirection.y = 1.0f; // Swim up
             }
             else if (_input.crouch)
             {
                 moveDirection.y = -1.0f; // Swim down
+            }
+
+            
+            //Nhân vật khi chạm đất lên bwờ thì không cần hạ xuống.
+            if (!Grounded && !_isGround)
+            {
+                //Nhân vật phải chìm xuống khi vượt quá _offsetLimit
+                if (transform.position.y + _offsetLimit / 2 > _swimLimitObject.position.y)
+                {
+                    moveDirection.y = -1.0f;
+                }
             }
 
             // Handle pitch rotation (up/down) for jump/crouch

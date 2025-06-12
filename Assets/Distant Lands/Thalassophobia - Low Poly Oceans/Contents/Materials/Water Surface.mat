@@ -123,7 +123,7 @@ Material:
     - _CausticSpeed: 0
     - _CrestScale: 0
     - _CrestSpeed: 0
-    - _Cull: 0
+    - _Cull: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _Distortion: 1

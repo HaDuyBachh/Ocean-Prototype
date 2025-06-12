@@ -53,6 +53,8 @@ MonoBehaviour:
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
   - {fileID: -1878332245247344467}
+  - {fileID: 8951985409461973835}
+  - {fileID: 4116657600328066418}
   m_RendererFeatureMap: adc0de57c6d2eee5
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -96,3 +98,51 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &4116657600328066418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48bd76fbc46e46fe9bc606bd3c30bd9b, type: 3}
+  m_Name: 'Stylized Water 2: Dynamic Effects'
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    renderRange: 200
+    fadePercentage: 10
+    texelsPerUnit: 8
+    maxResolution: 4096
+    highPrecision: 1
+    enableDisplacement: 1
+    enableNormals: 1
+    halfResolutionNormals: 0
+    normalMipmaps: 1
+    ignoreSceneView: 0
+    enableVFXGraphHooks: 1
+  displacementNormalShader: {fileID: 4800000, guid: e88bd17fc45d45adaa4fe5e4dc1e381e,
+    type: 3}
+--- !u!114 &8951985409461973835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 952211dd0b8f432ca3e01150850775e5, type: 3}
+  m_Name: StylizedWater2.UnderwaterRenderFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  resources: {fileID: 11400000, guid: 4eff212383c9f5945ae947b357c76582, type: 2}
+  settings:
+    allowBlur: 1
+    allowDistortion: 1
+    distortionMode: 1
+    directionalCaustics: 1
+    accurateDirectionalCaustics: 0
+    waterlineRefraction: 1
