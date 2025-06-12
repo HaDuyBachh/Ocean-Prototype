@@ -3,17 +3,16 @@ using System.Collections.Generic;
 
 public class GroupTrashSpawner : MonoBehaviour
 {
-    private List<TrashSpawner> trashSpawners = new List<TrashSpawner>();
+    [SerializeField] private List<TrashSpawner> trashSpawners = new List<TrashSpawner>();
 
-    private void Start()
+    public void AddTrashSpawnList()
     {
-        // Tìm tất cả TrashSpawner trong con
         trashSpawners.AddRange(GetComponentsInChildren<TrashSpawner>());
         if (trashSpawners.Count == 0)
         {
             Debug.LogWarning("No TrashSpawner components found in children of " + gameObject.name);
         }
-    }
+    }    
 
     public void SpawnAllTrash()
     {

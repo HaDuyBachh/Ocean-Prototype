@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4663289310866430169}
   - component: {fileID: 3453882928789273709}
   - component: {fileID: -4182330408005778809}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Prefab_SodaCan_Crushed2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,6 +168,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Mesh_sodaCan2_Crushed
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e261327e0316a2c4d8b04524bfe18d1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

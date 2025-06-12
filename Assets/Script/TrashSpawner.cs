@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using StylizedWater2;
 
 public class TrashSpawner : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class TrashSpawner : MonoBehaviour
     [Header("Độ nghiêng")]
     [SerializeField] private float tiltAngleMin = 75.0f;
     [SerializeField] private float tiltAngleMax = 90.0f;
+
+    [Header("Landing Water Setting")]
+    [SerializeField] private bool isOnWater = false;
 
     public void SpawnTrash()
     {
@@ -69,9 +73,16 @@ public class TrashSpawner : MonoBehaviour
                 randomRotation = Quaternion.Euler(0, yRotation, 0); // Fallback: chỉ xoay Y
             }
 
+            if (trashPrefab.CompareTag("NoRotate"))
+            {
+                randomRotation = Quaternion.Euler(0, yRotation, 0);
+            }
+
             // Sinh rác tại vị trí với rotation
             GameObject trash = Instantiate(trashPrefab, circlePosition, randomRotation);
             trash.transform.SetParent(this.transform); // Đặt rác làm con của spawner
+
+            if (isOnWater) trash.AddComponent<AlignToWaves>();
         }
     }
 

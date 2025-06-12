@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3345612919346642844}
   - component: {fileID: 6137845440914119177}
   - component: {fileID: -8063683048643811172}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Prefab_WaterBottle_L_Crushed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,6 +183,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 'WaterBottle_L_Crushed '
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 71394fd72699ea54d9ee2e5fe1cac120,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

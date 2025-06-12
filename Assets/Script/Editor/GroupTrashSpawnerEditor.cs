@@ -16,6 +16,12 @@ public class GroupTrashSpawnerEditor : Editor
         EditorGUILayout.Space();
 
         // Nút "Spawn All Trash"
+        if (GUILayout.Button("Add Trash Spawn"))
+        {
+            spawner.AddTrashSpawnList();
+        }
+
+        // Nút "Spawn All Trash"
         if (GUILayout.Button("Spawn All Trash"))
         {
             spawner.SpawnAllTrash();

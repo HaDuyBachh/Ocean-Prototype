@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 120974097318574136}
   - component: {fileID: -6122980327916789603}
   - component: {fileID: 6444168153953045011}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Prefab_BurgerBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,6 +191,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mesh_BurgerBox_Lid
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9ac7d2f78c25faf44b7352c9bfc895e0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -297,6 +302,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Mesh_BurgerBox_Main
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 53012080f79b168468896b4f0ce142fb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

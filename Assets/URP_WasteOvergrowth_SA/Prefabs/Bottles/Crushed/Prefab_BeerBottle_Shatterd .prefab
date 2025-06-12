@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 6143582882584444504}
   - component: {fileID: 7880316582547660123}
   - component: {fileID: 4783846238566328834}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: 'Prefab_BeerBottle_Shatterd '
-  m_TagString: Untagged
+  m_TagString: NoRotate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -241,11 +241,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8027410045669894635, guid: 3d33286af98131944a819435ab125bb6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: -7981266898303287619, guid: 3d33286af98131944a819435ab125bb6,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 8b761e1725e49d24ea9e9963ffcfc007, type: 2}
+    - target: {fileID: -5832877009029301909, guid: 3d33286af98131944a819435ab125bb6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -3943176640139145425, guid: 3d33286af98131944a819435ab125bb6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: -3807413711879993486, guid: 3d33286af98131944a819435ab125bb6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -261,11 +276,21 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.0764
       objectReference: {fileID: 0}
+    - target: {fileID: -2345278561734489334, guid: 3d33286af98131944a819435ab125bb6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: -1498050968463718472, guid: 3d33286af98131944a819435ab125bb6,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 8b761e1725e49d24ea9e9963ffcfc007, type: 2}
+    - target: {fileID: 270457926779946840, guid: 3d33286af98131944a819435ab125bb6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 458945244227328239, guid: 3d33286af98131944a819435ab125bb6,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -276,11 +301,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mesh_BeerBottle_Cracked
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3d33286af98131944a819435ab125bb6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2399698115021303052, guid: 3d33286af98131944a819435ab125bb6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3729838459207757971, guid: 3d33286af98131944a819435ab125bb6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 4725628090279046739, guid: 3d33286af98131944a819435ab125bb6,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 8b761e1725e49d24ea9e9963ffcfc007, type: 2}
+    - target: {fileID: 6126076794578234273, guid: 3d33286af98131944a819435ab125bb6,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

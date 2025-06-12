@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1250550159654729169}
   - component: {fileID: -5404553809767725656}
   - component: {fileID: -6720999527281197022}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Prefab_cabbage_leaf1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,6 +184,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mesh_cabbage_Leaf
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 546c4a56e0be256438284192c09bbbe3,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -192,6 +197,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5559796772184880088}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 546c4a56e0be256438284192c09bbbe3,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9106101259240596709}
   m_SourcePrefab: {fileID: 100100000, guid: 546c4a56e0be256438284192c09bbbe3, type: 3}
 --- !u!23 &3288247799237970429 stripped
 MeshRenderer:
@@ -217,6 +226,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &9106101259240596709
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3936937188534888488}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.2641572, y: 0.040417653, z: 0.27848902}
+  m_Center: {x: -0.0072172815, y: -0.0043401537, z: 0.00820657}
 --- !u!4 &4461131193602405010 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 546c4a56e0be256438284192c09bbbe3,
