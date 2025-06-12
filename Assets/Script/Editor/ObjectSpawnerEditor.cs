@@ -1,30 +1,35 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(ObjectSpawner))]
-public class ObjectSpawnerEditor : Editor
+[CustomEditor(typeof(GroupObjectSpawner))]
+public class GroupObjectSpawnerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         // Vẽ giao diện Inspector mặc định
         DrawDefaultInspector();
 
-        // Lấy reference đến ObjectSpawner
-        ObjectSpawner spawner = (ObjectSpawner)target;
+        // Lấy reference đến GroupObjectSpawner
+        GroupObjectSpawner spawner = (GroupObjectSpawner)target;
 
         // Thêm khoảng cách
         EditorGUILayout.Space();
 
-        // Nút "Spawn Objects"
-        if (GUILayout.Button("Spawn Objects"))
+        if (GUILayout.Button("Add Spawn Objects"))
         {
-            spawner.SpawnObjects();
+            spawner.AddObjectSpawnList();
         }
 
-        // Nút "Clear Objects"
-        if (GUILayout.Button("Clear Objects"))
+        // Nút "Spawn All Objects"
+        if (GUILayout.Button("Spawn All Objects"))
         {
-            spawner.ClearObjects();
+            spawner.SpawnAllObjects();
+        }
+
+        // Nút "Clear All Objects"
+        if (GUILayout.Button("Clear All Objects"))
+        {
+            spawner.ClearAllObjects();
         }
     }
 }

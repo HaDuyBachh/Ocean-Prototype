@@ -27,7 +27,7 @@ public class ObjectSpawner : MonoBehaviour
 
             // Chiếu tia xuống mặt đất để lấy vị trí
             RaycastHit hit;
-            Vector3 rayStart = circlePosition + Vector3.up * 100f; // Bắt đầu từ trên cao
+            Vector3 rayStart = circlePosition + Vector3.up * 5f; // Bắt đầu từ trên cao
             Vector3 normal = Vector3.up; // Mặc định pháp tuyến
             if (Physics.Raycast(rayStart, Vector3.down, out hit, 200f, groundLayer))
             {
