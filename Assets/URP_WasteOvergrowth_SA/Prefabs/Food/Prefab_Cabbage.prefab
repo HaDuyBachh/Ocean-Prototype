@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7784607327431431581}
   - component: {fileID: 5604608035285600213}
   - component: {fileID: 1122651953422781974}
+  - component: {fileID: -7083920139871860011}
   m_Layer: 0
   m_Name: Prefab_Cabbage
   m_TagString: Untagged
@@ -146,6 +147,21 @@ MonoBehaviour:
     fillPass:
       shader: {fileID: 0}
       serializedProperties: []
+--- !u!114 &-7083920139871860011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289620634612355138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f339292b0233da44b8ed3576467c0b8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlinable: {fileID: 0}
+  disapperFX: {fileID: 6813416509558619124, guid: 3b7f2c753d435d647a80f1f047a113e3,
+    type: 3}
 --- !u!1001 &3744055053502828505
 PrefabInstance:
   m_ObjectHideFlags: 0

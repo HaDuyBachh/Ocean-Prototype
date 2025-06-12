@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2176078599250161769}
   - component: {fileID: -1627223196256425729}
+  - component: {fileID: -3521045371625785685}
   m_Layer: 0
   m_Name: Prefab_SaiceCup
   m_TagString: Untagged
@@ -96,6 +97,21 @@ MonoBehaviour:
     fillPass:
       shader: {fileID: 0}
       serializedProperties: []
+--- !u!114 &-3521045371625785685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698171396981000514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f339292b0233da44b8ed3576467c0b8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlinable: {fileID: 0}
+  disapperFX: {fileID: 6813416509558619124, guid: 3b7f2c753d435d647a80f1f047a113e3,
+    type: 3}
 --- !u!1001 &8340583870474352746
 PrefabInstance:
   m_ObjectHideFlags: 0
