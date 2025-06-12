@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 939185695990444781}
+  - component: {fileID: 5461705593771584475}
   m_Layer: 0
   m_Name: Prefab_apple
   m_TagString: Untagged
@@ -32,6 +33,58 @@ Transform:
   - {fileID: 5411899554283692923}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5461705593771584475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2272169196148347614}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  complexMaskingMode: 0
+  drawingMode: 1
+  outlineLayer: 0
+  outlineTargets:
+  - CutoutMask: 8
+    renderer: {fileID: 6580252891753437204}
+    SubmeshIndex: 0
+    BoundsMode: 0
+    Bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    CutoutThreshold: 0.5
+    CullMode: 2
+    cutoutTextureName: 
+    cutoutTextureIndex: 0
+  renderStyle: 1
+  outlineParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  backParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  frontParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
 --- !u!1001 &5517002477554222224
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -108,6 +161,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6780209765078967661}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 45c09896a47c11449adad5da68a77bf0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1748416056371004185}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 45c09896a47c11449adad5da68a77bf0,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -2935703185351673220}
   m_SourcePrefab: {fileID: 100100000, guid: 45c09896a47c11449adad5da68a77bf0, type: 3}
 --- !u!1 &4634552922655226305 stripped
 GameObject:
@@ -136,9 +197,43 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.0807228, y: 1.8477588, z: 2.015007}
   m_Center: {x: -0.04036173, y: 0, z: 0.0075037773}
+--- !u!208 &1748416056371004185
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4634552922655226305}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.0400001, y: 0.924, z: 1.008}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.040000003, y: 0, z: 0.008}
+  m_TimeToStationary: 0.5
+--- !u!114 &-2935703185351673220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4634552922655226305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &5411899554283692923 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 45c09896a47c11449adad5da68a77bf0,
+    type: 3}
+  m_PrefabInstance: {fileID: 5517002477554222224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6580252891753437204 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 45c09896a47c11449adad5da68a77bf0,
     type: 3}
   m_PrefabInstance: {fileID: 5517002477554222224}
   m_PrefabAsset: {fileID: 0}
