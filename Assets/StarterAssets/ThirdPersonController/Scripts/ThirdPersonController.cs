@@ -308,7 +308,7 @@ namespace StarterAssets
         private void Swim()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = 3.0f * (_input.sprint ? SprintSpeed : MoveSpeed);
+            float targetSpeed = 1.5f * (_input.sprint ? SprintSpeed : MoveSpeed);
 
             // if there is no input, set the target speed to 0
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
