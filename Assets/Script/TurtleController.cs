@@ -7,6 +7,7 @@ public class TurtleController : MonoBehaviour
     [Header("Way Point")]
     public bool isAutoGetListWayPoint = true;
     public Transform listWayPoint;
+    public int waypointID = 0;
 
     // Danh sách các waypoint để rùa di chuyển
     [SerializeField] private List<Transform> waypoints;
@@ -272,10 +273,9 @@ public class TurtleController : MonoBehaviour
     {
         // Nếu không có waypoint, thoát
         if (waypoints.Count == 0) return;
+        if (currentWaypointIndex >= waypoints.Count) return;
 
-        // Chọn waypoint ngẫu nhiên
-        currentWaypointIndex = Random.Range(0, waypoints.Count);
-        agent.SetDestination(waypoints[currentWaypointIndex].position);
+        agent.SetDestination(waypoints[currentWaypointIndex++].position);
     }
 
     // Vẽ phạm vi kiểm tra mặt đất trong Scene view

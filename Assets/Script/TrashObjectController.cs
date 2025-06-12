@@ -13,12 +13,6 @@ public class TrashObjectController : InteractableObject
         outlinable.enabled = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public override void OnLookEnter()
     {
         outlinable.enabled = true;

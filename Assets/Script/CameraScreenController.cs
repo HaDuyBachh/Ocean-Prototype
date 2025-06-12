@@ -10,6 +10,12 @@ public class CameraScreenController : MonoBehaviour
     private TriggerCollider triggerCollider; // TriggerCollider trong con
     [SerializeField]  private List<InteractableObject> targetList = new (); // Danh sách các vật thể trong vùng
 
+    [Header("Cinematic Camera")]
+    [SerializeField] private GameObject mainCameraFollow;
+
+    [Header("Status")]
+    [SerializeField] private bool isStopForConversation = false;
+
     private void Start()
     {
         // Tìm TriggerCollider trong con
@@ -87,6 +93,8 @@ public class CameraScreenController : MonoBehaviour
 
     private void Update()
     {
+        if (isStopForConversation) return;
+
         // Kiểm tra nếu currentTarget bị hủy
         if (targetList.Any(target => target == null || target.gameObject == null))
         {
@@ -98,5 +106,22 @@ public class CameraScreenController : MonoBehaviour
         {
             currentTarget.OnClick();
         }
+    }
+
+    public void StartConversation()
+    {
+        SetStopForConversation(true);
+        mainCameraFollow.SetActive(false);
+    }    
+
+    public void StopConversation()
+    {
+        SetStopForConversation(false);
+        mainCameraFollow.SetActive(true);
+    }    
+
+    public void SetStopForConversation(bool state)
+    {
+        isStopForConversation = state;
     }
 }

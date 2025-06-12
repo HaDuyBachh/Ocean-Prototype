@@ -8,6 +8,10 @@ public class CrabController : MonoBehaviour
     public bool isAutoGetListWayPoint = true;
     public Transform listWayPoint;
 
+    [Header("Behavior")]
+    [SerializeField] private bool isFriendly = false;
+    public bool IsFriendly { get { return isFriendly; } set { isFriendly = value; } }
+
     // Danh sách các waypoint để cua di chuyển
     [SerializeField] private List<Transform> waypoints;
 
@@ -261,6 +265,8 @@ public class CrabController : MonoBehaviour
     // Xử lý hành động tấn công
     private bool HandleAttack()
     {
+        if (isFriendly) return false;
+
         // Kiểm tra nếu đang tấn công
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         bool isPlayingAttack = stateInfo.IsName("Attack");
@@ -337,5 +343,35 @@ public class CrabController : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
+
+
+    // Dừng tất cả hành động của cua
+    public void StopBehavior()
+    {
+        if (agent != null)
+        {
+            agent.isStopped = true; // Dừng NavMeshAgent
+            agent.velocity = Vector3.zero; // Xóa vận tốc
+        }
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", 0f); // Dừng animation di chuyển
+            animator.SetBool("Attack", false); // Dừng animation tấn công
+        }
+        isWaiting = false;
+        isAttacking = false;
+        enabled = false; // Tắt Update
+    }
+
+    // Khôi phục hành động của cua
+    public void ResumeBehavior()
+    {
+        if (agent != null)
+        {
+            agent.isStopped = false; // Bật lại NavMeshAgent
+        }
+        enabled = true; // Bật lại Update
+        ChooseNewAction(); // Chọn hành động mới để tiếp tục
     }
 }
