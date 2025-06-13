@@ -59,7 +59,6 @@ public class DolphinQuestTimeline : MonoBehaviour
                 StopCoroutine(nameof(VictimRoutine));
                 StartCoroutine(VictimRoutine());
                 moveCircle = false;
-                rescuerDolphin.moveSpeed = 1.8f;
             }
 
             currentPhase = phaseIndex;

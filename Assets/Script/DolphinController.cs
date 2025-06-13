@@ -11,81 +11,80 @@ public class DolphinController : MonoBehaviour
     public float HipShakeDuration => hipShakeDuration;
 
     [SerializeField] private List<Transform> waypoints = new List<Transform>();
-    private Coroutine moveCoroutine;
-    private Coroutine hipShakeCoroutine;
     [SerializeField] private bool isMoving = false;
     [SerializeField] private int currentIndex = 0;
+    [SerializeField] private bool moveCircle = false;
+
+    private Coroutine moveCoroutine;
+    private Coroutine moveThroughWaypointsCoroutine;
+    private Coroutine hipShakeCoroutine;
 
     private void Update()
     {
-        if (isMoving && moveCoroutine != null && waypoints.Count > 0)
+        HandleMove();
+    }
+
+    private void HandleMove()
+    {
+        if (!isMoving || waypoints.Count == 0 || currentIndex >= waypoints.Count)
+            return;
+
+        Transform target = waypoints[currentIndex];
+        Vector3 direction = (target.position - transform.position).normalized;
+
+        // Di chuyển từng bước
+        transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
+
+        // Xoay về hướng di chuyển
+        if (direction != Vector3.zero)
         {
-            Vector3 direction = (waypoints[currentIndex].position - transform.position).normalized;
-            if (direction != Vector3.zero)
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+        }
+
+        // Đến gần đích -> chuyển waypoint tiếp theo
+        if (Vector3.Distance(transform.position, target.position) <= 0.05f)
+        {
+            if (moveCircle)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+                currentIndex = (currentIndex + 1) % waypoints.Count;
+            }
+            else
+            {
+                currentIndex++;
+                if (currentIndex >= waypoints.Count)
+                {
+                    isMoving = false;
+                }
             }
         }
     }
 
-    public void MoveByWaypoint(Transform waypoint)
-    {
-        if (waypoint == null)
-        {
-            Debug.LogWarning("Waypoint is null in MoveByWaypoint.");
-            return;
-        }
-
-        if (moveCoroutine != null)
-        {
-            StopCoroutine(moveCoroutine);
-        }
-
-        int index = waypoints.IndexOf(waypoint);
-        if (index >= 0)
-        {
-            currentIndex = index;
-        }
-        else
-        {
-            Debug.LogWarning($"Waypoint {waypoint.name} không có trong danh sách waypoints.");
-            return;
-        }
-
-        moveCoroutine = StartCoroutine(MoveToWaypoint(waypoint));
-    }
 
     public void UpdateWayPoint(GameObject waypointParent, bool moveCircle)
     {
+        Debug.Log("Update waypoint: " + moveCircle);
+
         waypoints.Clear();
         if (waypointParent != null)
         {
-            Debug.Log($"WaypointParent: {waypointParent.name}, ChildCount: {waypointParent.transform.childCount}");
             for (int i = 0; i < waypointParent.transform.childCount; i++)
             {
-                Transform child = waypointParent.transform.GetChild(i);
-                waypoints.Add(child);
-                Debug.Log($"Đang thêm: {child.name}");
+                waypoints.Add(waypointParent.transform.GetChild(i));
             }
-            Debug.Log($"Số waypoint sau UpdateWayPoint: {waypoints.Count}");
-            foreach (Transform wp in waypoints)
-            {
-                Debug.Log($"Waypoint trong danh sách: {wp.name}");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("WaypointParent is null in UpdateWayPoint.");
         }
 
-        if (waypoints.Count > 0)
+        if (waypoints.Count == 0)
         {
-            currentIndex = 0;
-            MoveByWaypoint(waypoints[currentIndex]);
-            StartCoroutine(MoveThroughWaypoints(moveCircle));
+            Debug.LogWarning("Không có waypoint nào được thêm!");
+            return;
         }
+
+        this.moveCircle = moveCircle;
+        currentIndex = 0;
+        isMoving = true;
     }
+
 
     public void LookAt(Vector3 targetPosition)
     {
@@ -108,43 +107,7 @@ public class DolphinController : MonoBehaviour
         hipShakeCoroutine = StartCoroutine(HipShakeRoutine());
     }
 
-    private IEnumerator MoveToWaypoint(Transform waypoint)
-    {
-        isMoving = true;
-        Debug.Log($"Di chuyển đến: {waypoint.name}");
-        while (Vector3.Distance(transform.position, waypoint.position) > 0.1f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, waypoint.position, moveSpeed * Time.deltaTime);
-            yield return null;
-        }
 
-        transform.position = waypoint.position;
-        isMoving = false;
-    }
-
-    private IEnumerator MoveThroughWaypoints(bool moveCircle)
-    {
-        while (waypoints.Count > 0)
-        {
-            yield return StartCoroutine(MoveToWaypoint(waypoints[currentIndex]));
-            if (moveCircle)
-            {
-                currentIndex = (currentIndex + 1) % waypoints.Count;
-            }
-            else
-            {
-                currentIndex++;
-                if (currentIndex >= waypoints.Count)
-                {
-                    break;
-                }
-            }
-            if (waypoints.Count > 0)
-            {
-                MoveByWaypoint(waypoints[currentIndex]);
-            }
-        }
-    }
 
     private IEnumerator HipShakeRoutine()
     {

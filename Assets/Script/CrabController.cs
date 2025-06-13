@@ -294,7 +294,7 @@ public class CrabController : MonoBehaviour
                 {
                     // Gây sát thương cho GameObject có HealthController
                     HealthController health = hit.GetComponentInParent<HealthController>();
-                    Debug.Log("Tấn công: " + (health != null ? health.gameObject.name : "Không tìm thấy HealthController"));
+                    //Debug.Log("Tấn công: " + (health != null ? health.gameObject.name : "Không tìm thấy HealthController"));
                     if (health != null)
                     {
                         health.HandleDamage(10); // Gây 10 sát thương
