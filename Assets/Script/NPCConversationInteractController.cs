@@ -25,6 +25,7 @@ public class NPCConversationInteractController : InteractableObject
     public UnityEvent OnConversationStart;
     public UnityEvent OnConversationEnd;
     public UnityEvent OnConversationTriggerPoint;
+    public UnityEvent OnConversationTriggerPointDelay;
     public UnityEvent OnLookEnterEvent;
     public UnityEvent OnLookExitEvent;
     public UnityEvent OnClickEvent;
@@ -153,7 +154,8 @@ public class NPCConversationInteractController : InteractableObject
 
             if (currentTalkId == triggerTalkID)
             {
-                StartCoroutine(DelayedInvoke(OnConversationTriggerPoint));
+                OnConversationTriggerPoint.Invoke();
+                StartCoroutine(DelayedInvoke(OnConversationTriggerPointDelay));
             }
 
             return true;
