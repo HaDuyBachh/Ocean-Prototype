@@ -180,4 +180,9 @@ public class DolphinInteractController : InteractableObject
     {
         return reply[currentTalkId];
     }
+
+    public void DestroyThisScript()
+    {
+        Destroy(this);
+    }
 }

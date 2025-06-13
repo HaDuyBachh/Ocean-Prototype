@@ -53,16 +53,26 @@ public class DolphinQuestTimeline : MonoBehaviour
         if (phaseIndex >= 0 && phaseIndex < waypointParents.Count && waypointParents[phaseIndex] != null)
         {
             bool moveCircle = true;
-            if (phaseIndex == 1) moveCircle = false;
+            currentPhase = phaseIndex;
+
+            if (phaseIndex == 1)
+            {
+                moveCircle = false;
+                rescuerDolphin.UpdateWayPoint(waypointParents[phaseIndex], moveCircle);
+            }
             if (phaseIndex == 2)
             {
                 StopCoroutine(nameof(VictimRoutine));
                 StartCoroutine(VictimRoutine());
                 moveCircle = false;
+                rescuerDolphin.UpdateWayPoint(waypointParents[phaseIndex], moveCircle);
             }
-
-            currentPhase = phaseIndex;
-            rescuerDolphin.UpdateWayPoint(waypointParents[phaseIndex], moveCircle);
+            if (phaseIndex == 3)
+            {
+                currentPhase = phaseIndex;
+                victimDolphin.UpdateWayPoint(waypointParents[phaseIndex], moveCircle);
+                rescuerDolphin.UpdateWayPoint(waypointParents[0], moveCircle);
+            }
         }
     }
 

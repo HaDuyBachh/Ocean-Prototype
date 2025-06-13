@@ -14,8 +14,9 @@ public class DolphinPullQuestController : InteractableObject
     [SerializeField] private float targetLocalZ = -1.5f;         // Mốc z local để tính là hoàn thành
     [SerializeField] private float rotationSpeed = 1f;
     [SerializeField] private UnityEvent onActionCompleted;       // Sự kiện gọi khi kéo xong
+    [SerializeField] private float pushBackSpeed = 0.1f;
 
-    private bool isInAction = false;
+    [SerializeField] private bool isInAction = false;
     private Quaternion targetRotation;
     private bool isRotating = false;
 
@@ -64,9 +65,11 @@ public class DolphinPullQuestController : InteractableObject
 
     private void EndAction()
     {
+        GetComponent<Animator>().SetBool(Animator.StringToHash("done"), true);
         isInAction = false;
         cameraFollow.SetActive(false);
         onActionCompleted?.Invoke();
+        Destroy(this);
     }
 
     private void PullObject()
@@ -79,7 +82,7 @@ public class DolphinPullQuestController : InteractableObject
         interactObject.transform.localPosition = localPos;
 
         // Kiểm tra nếu đã đạt mốc
-        if (localPos.z <= targetLocalZ)
+        if (localPos.z >= targetLocalZ)
         {
             EndAction();
         }
