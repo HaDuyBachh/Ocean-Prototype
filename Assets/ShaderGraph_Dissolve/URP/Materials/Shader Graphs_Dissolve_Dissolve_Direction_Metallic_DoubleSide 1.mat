@@ -57,7 +57,7 @@ Material:
     - BOOLEAN_USE_WROLDSPACE: 1
     - BOOLEAN_WORLDORIGIN: 0
     - BOOLEAN_WROLDSPACE_OFFEST: 1
-    - _DierctionEdgeWidthScale: 54
+    - _DierctionEdgeWidthScale: -1.54
     - _DirectionMaskScale: 7.34
     - _EdgeColorIntensity: 1
     - _EdgeWidth: 0.218
