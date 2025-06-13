@@ -25,8 +25,11 @@ public class TrashObjectController : InteractableObject
 
     public override void OnClick()
     {
-        GameObject fx = Instantiate(disapperFX, transform.position + transform.up * 0.2f, Quaternion.identity);
-        Destroy(fx, 0.8f);
+        if (disapperFX != null)
+        {
+            GameObject fx = Instantiate(disapperFX, transform.position + transform.up * 0.2f, Quaternion.identity);
+            Destroy(fx, 0.8f);
+        }
         Destroy(gameObject, 0.3f);
     }
 }

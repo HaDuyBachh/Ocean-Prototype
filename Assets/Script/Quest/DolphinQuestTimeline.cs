@@ -71,7 +71,8 @@ public class DolphinQuestTimeline : MonoBehaviour
             {
                 currentPhase = phaseIndex;
                 victimDolphin.UpdateWayPoint(waypointParents[phaseIndex], moveCircle);
-                rescuerDolphin.UpdateWayPoint(waypointParents[0], moveCircle);
+                rescuerDolphin.UpdateWayPoint(waypointParents[phaseIndex+1], false);
+                rescuerDolphin.GetComponent<EPOOutline.Outlinable>().enabled = false;
             }
         }
     }

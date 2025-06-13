@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.Events;
+
 public class CrabInteractController : InteractableObject
 {
     [Header("Object Setting")]
@@ -27,6 +29,8 @@ public class CrabInteractController : InteractableObject
     [SerializeField] private float rotationSpeed = 1f; // Tốc độ xoay mượt (độ/giây)
     [SerializeField] private bool isRotating = false;
     private Quaternion targetRotation;
+
+    [SerializeField] private UnityEvent endEvent;
 
     private CrabController crabController;
     private EPOOutline.Outlinable outlinable;
@@ -144,6 +148,14 @@ public class CrabInteractController : InteractableObject
         currentTalkId = 0;
         crabController.ResumeBehavior();
         _isInConversation = false;
+
+        StartCoroutine(DelyInvoke());
+    }
+
+    IEnumerator DelyInvoke()
+    {
+        yield return new WaitForSeconds(3.0f);
+        endEvent.Invoke();
     }
 
     public override bool Interact()
