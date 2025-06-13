@@ -12,6 +12,9 @@ public class TurtleUIPathMover : MonoBehaviour
     private bool isMoving = false;
     private Vector2 targetPosition;
 
+    [SerializeField] private List<int> stopPoint;
+    [SerializeField] private List<GameObject> stopObject;
+
     void Start()
     {
         if (turtle != null && points.Count > 0)
@@ -21,8 +24,23 @@ public class TurtleUIPathMover : MonoBehaviour
         }
     }
 
+    public void ResumeMove()
+    {
+        stopObject[stopPoint.IndexOf(currentIndex-1)].GetComponentInChildren<CardController>().OnCollapse();
+        isMoving = true;
+    }    
+
+    public void StopMove()
+    {
+        stopObject[stopPoint.IndexOf(currentIndex)].GetComponentInChildren<CardController>().OnExpand();
+        isMoving = false;
+    }    
+
     void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.T)) ResumeMove();
+
         if (!isMoving || currentIndex >= points.Count)
             return;
 
@@ -45,6 +63,11 @@ public class TurtleUIPathMover : MonoBehaviour
         // Nếu đã tới target, chuyển sang điểm tiếp theo
         if (Vector2.Distance(turtle.anchoredPosition, targetPosition) < 1f)
         {
+            if (stopPoint.Contains(currentIndex))
+            {
+                StopMove();
+            }    
+
             currentIndex++;
             if (currentIndex >= points.Count)
             {
