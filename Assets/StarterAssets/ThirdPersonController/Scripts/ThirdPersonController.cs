@@ -15,6 +15,10 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
+        [Header("Init Water")]
+        [Tooltip("Rùa đã ở sẵn dưới nước")]
+        public bool _initWater = false;
+
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
@@ -150,6 +154,8 @@ namespace StarterAssets
 #endif
 
             AssignAnimationIDs();
+
+            if (_initWater) ChangeToWaterEnvairoment();
         }
 
         private void Update()
