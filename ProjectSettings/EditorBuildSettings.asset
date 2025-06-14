@@ -8,9 +8,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Scene 0.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level 1.unity
     guid: 332b3b0241f3cee41aa378cdab70c44d
+  - enabled: 1
+    path: Assets/Scenes/MapUI.unity
+    guid: 483e1030cf578444c978910197d2b6ed
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7,
       type: 2}
